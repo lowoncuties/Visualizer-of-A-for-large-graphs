@@ -6,6 +6,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 import re
 import math
 import time
+import matplotlib.animation as animation
 
 class GraphApp:
     def __init__(self, master):
@@ -131,11 +132,30 @@ class GraphApp:
             nx.draw_networkx_nodes(subgraph, pos, nodelist=[start_node], node_color="green", node_size=1000, ax=self.ax)
             nx.draw_networkx_nodes(subgraph, pos, nodelist=[end_node], node_color="red", node_size=1000, ax=self.ax)
 
+
             calculation_time = end_time - start_time
             preprocessing_time = prep_end_time - prep_start_time
-            self.time_text.insert(tk.END, f"A* for {start_node} -> {end_node} took: {calculation_time:.8f} seconds | Visual preprocessing: {preprocessing_time} seconds\n")
+            self.time_text.insert(tk.END, f"A* for {start_node} -> {end_node} took: {calculation_time:.8f} seconds \n Visual preprocessing: {preprocessing_time} seconds\n Shortest path lenght: {len(shortest_path)} \n" )
+
 
             self.canvas.draw()
+
+            
+            def update(frame):
+                current_node = shortest_path[min(frame, len(shortest_path) - 1)]
+                nx.draw_networkx_nodes(subgraph, pos, nodelist=[current_node], node_color="blue", node_size=700, ax=self.ax)
+
+
+            ani_start_time = time.time()
+            ani = animation.FuncAnimation(self.fig, update, frames=len(shortest_path), interval=10, repeat=False)
+            ani.save("shortest_path_animation.gif", writer="imagemagick")
+            ani_end_time = time.time()
+
+            animation_time = ani_end_time - ani_start_time
+            self.time_text.insert(tk.END, f"Animation save time: {animation_time} \n" )
+
+
+            
 
     def a_star(self, start_node, end_node):
         heuristic = self.euclidean_distance  
