@@ -128,6 +128,9 @@ class GraphApp:
             nx.draw_networkx_nodes(subgraph, pos, nodelist=shortest_path, node_color="orange", node_size=700, ax=self.ax)
             nx.draw_networkx_edges(subgraph, pos, edgelist=path_edges, edge_color="red", width=2, ax=self.ax)
 
+            nx.draw_networkx_nodes(subgraph, pos, nodelist=[start_node], node_color="green", node_size=1000, ax=self.ax)
+            nx.draw_networkx_nodes(subgraph, pos, nodelist=[end_node], node_color="red", node_size=1000, ax=self.ax)
+
             calculation_time = end_time - start_time
             preprocessing_time = prep_end_time - prep_start_time
             self.time_text.insert(tk.END, f"A* for {start_node} -> {end_node} took: {calculation_time:.8f} seconds | Visual preprocessing: {preprocessing_time} seconds\n")
